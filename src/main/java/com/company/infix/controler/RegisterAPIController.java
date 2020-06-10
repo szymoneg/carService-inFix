@@ -20,7 +20,7 @@ public class RegisterAPIController {
     JdbcTemplate jdbc;
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<Void> testRegister(@RequestBody UserDto userDto){
-        System.out.println("Metoda działą"+userDto);
+        System.out.println("Metoda działą"+userDto.getName());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
