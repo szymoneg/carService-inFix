@@ -10,5 +10,5 @@ public class UserRegisterDto {
     private String surname;
     private String pesel;
     private String driversLicense;
-    private String pass;
+    private String password;
 }

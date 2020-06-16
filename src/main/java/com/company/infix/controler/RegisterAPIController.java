@@ -25,7 +25,7 @@ public class RegisterAPIController {
     public ResponseEntity<Void> testRegister(@RequestBody UserRegisterDto db) throws NoSuchAlgorithmException {
 
         jdbc.update("INSERT INTO user(permision,name,surname,pesel,drivers_license,idcar,password) values (?,?,?,?,?,?,?)",
-                db.getPermision(),db.getName(),db.getSurname(),db.getPesel(),db.getDriversLicense(),db.getIdCar(),HashMethod(db.getPass()));
+                db.getPermision(),db.getName(),db.getSurname(),db.getPesel(),db.getDriversLicense(),db.getIdCar(),HashMethod(db.getPassword()));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

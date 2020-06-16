@@ -21,7 +21,7 @@ public class LoginAPIController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<Void> testLogin(@RequestBody UserLoginDto db) throws NoSuchAlgorithmException {
         RegisterAPIController n1 = new RegisterAPIController();
-        String password = n1.HashMethod(db.getPass());
+        String password = n1.HashMethod(db.getPassword());
         try {
             String test = jdbc.queryForObject("select name from user where name=? and password=?", new Object[]{db.getLogin(), password}, String.class);
             return new ResponseEntity<>(HttpStatus.OK);
