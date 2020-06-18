@@ -17,7 +17,8 @@ public class ReservationAPIController {
     @CrossOrigin
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<Void>testReservation(ReservationDto resDb){
-
+        jdbc.update("INSERT INTO reservation(iduser,idcar,data_start,data_finish,id_service,status,description) VALUES (?,?,?,?,?,?,?)",
+                resDb.getIdUser(),resDb.getIdCar(),resDb.getDataStart(),null,resDb.getIdService(),null,resDb.getDescription());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
