@@ -2,6 +2,8 @@ package com.company.infix.controler;
 
 
 import com.company.infix.dto.UserLoginDto;
+import com.company.infix.service.HashPassword;
+import com.company.infix.service.impl.HashPasswordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -15,11 +17,11 @@ import java.security.NoSuchAlgorithmException;
 public class LoginAPIController {
     @Autowired
     JdbcTemplate jdbc;
+    private HashPassword hashPassword= new HashPasswordImpl();;
     @CrossOrigin
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<Void> testLogin(@RequestBody UserLoginDto db) throws NoSuchAlgorithmException {
-        RegisterAPIController n1 = new RegisterAPIController();
-        String password = n1.HashMethod(db.getPassword());
+        String password = hashPassword.HashMethod(db.getPassword());
         try {
             String test = jdbc.queryForObject("select name from user where login=? and password=?", new Object[]{db.getLogin(), password}, String.class);
             return new ResponseEntity<>(HttpStatus.OK);
