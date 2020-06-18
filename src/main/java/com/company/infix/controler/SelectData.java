@@ -17,6 +17,6 @@ public class SelectData {
 
     @RequestMapping("/select")
     public int select_index() {
-        return jdbc.queryForObject("select count(*) from cars",Integer.class);
+        return jdbc.queryForObject("select count(*) from car",Integer.class);
     }
 }
