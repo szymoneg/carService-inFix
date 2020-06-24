@@ -17,11 +17,12 @@ public class CarsDao {
     @Autowired
     JdbcTemplate jdbc;
 
-    //Metoda zwraca json listy samochodów usera o konkretynm id
     @CrossOrigin
-    @RequestMapping(value = "/owned-cars/{iduser}",method = RequestMethod.GET)
-    public String getCars(@PathVariable("iduser") String iduser) throws SQLException {
-        ArrayList<CarDto> newList = jdbc.query("SELECT marka, model FROM car WHERE iduser=?",new Object[]{iduser}, new ResultSetExtractor<ArrayList<CarDto>>() {
+    @RequestMapping(value = "/owned-cars/{login}",method = RequestMethod.GET)
+    public String getCars(@PathVariable("login") String login) throws SQLException {
+        ArrayList<CarDto> newList = jdbc.query("SELECT marka, model,engine_capacity,vin,year_of FROM car " +
+                "INNER JOIN user USING (iduser) WHERE login=?",
+                new Object[]{login}, new ResultSetExtractor<ArrayList<CarDto>>() {
             @Override
             public ArrayList<CarDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
                 ArrayList<CarDto> newList = new ArrayList<CarDto>();

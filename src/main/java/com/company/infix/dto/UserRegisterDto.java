@@ -11,4 +11,6 @@ public class UserRegisterDto {
     private String driversLicense;
     private String password;
     private String login;
+    private String email;
+    private String telephoneNumber;
 }

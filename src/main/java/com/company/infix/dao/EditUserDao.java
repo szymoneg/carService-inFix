@@ -2,35 +2,41 @@ package com.company.infix.dao;
 
 
 import com.company.infix.controler.EditAPIController;
+import com.company.infix.dto.UserEditDto;
+import com.company.infix.service.HashPassword;
+import com.company.infix.service.impl.HashPasswordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+//do
+
 @RestController
 public class EditUserDao{
-    //kurwa tutaj troche nie wiem jak to rozergrac
-    //narazie nie działa ale jutro juz napewno bedzie działac
-    String test = new EditAPIController().logintest;
+    private HashPassword hashPassword = new HashPasswordImpl();
+
     @Autowired
     JdbcTemplate jdbc;
     SpringJdbcConfig conn = new SpringJdbcConfig();
 
     @CrossOrigin
-    @RequestMapping(value = "/edit-send/{login}",method = RequestMethod.GET)
-    public ResponseEntity<String> sendEditData(@PathVariable("login") String login1) throws SQLException {
+    @RequestMapping(value = "/edit-send",method = RequestMethod.POST)
+    public ResponseEntity<String> sendEditData(@RequestBody UserEditDto edit) throws SQLException {
         try {
-            System.out.println(test);
-            PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET name=? WHERE login=?");
-            st.setString(1, test);
-            st.setString(2, login1);
+            PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
+            st.setString(1, hashPassword.HashMethod(edit.getPassword()));
+            st.setString(2, edit.getEmail());
+            st.setString(3, edit.getTelephoneNumber());
+            st.setString(4, edit.getLogin());
             st.executeUpdate();
             return new ResponseEntity<>(HttpStatus.OK);
-        }catch (SQLException e) {
+        }catch (SQLException | NoSuchAlgorithmException e) {
             return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
         }
     }
