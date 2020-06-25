@@ -2,6 +2,7 @@ package com.company.infix.controler;
 
 import com.company.infix.dto.CarDto;
 import com.company.infix.dto.ReservationDto;
+import com.company.infix.service.CarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,20 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationAPIController {
     @Autowired
     JdbcTemplate jdbc;
+    @Autowired
+    CarList carList;
+
+    @CrossOrigin
+    @RequestMapping(value = "/add-res/{login}",method = RequestMethod.GET)
+    public String test(@PathVariable("login") String login){
+        return carList.getOwnedCars(login);
+    }
 
     @CrossOrigin
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ResponseEntity<Void>testReservation(@RequestBody ReservationDto resDb){
-
-        jdbc.update("INSERT INTO reservation(iduser,idcar,data_start,data_finish,status,description) VALUES (?,?,?,?,?,?)",
-                resDb.getIdUser(),resDb.getIdCar(),resDb.getDataStart(),null,null,resDb.getDescription());
+        jdbc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?)",
+                resDb.getIdUser(),resDb.getIdCar(),null,null,"oczekujący",resDb.getDescription());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

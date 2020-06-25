@@ -4,10 +4,11 @@ import lombok.Data;
 
 @Data
 public class ReservationDto {
-    private int idUser;
-    private int idCar;
-    private String dataStart;
-    private String dataFinish;
+    private String idReservation;
+    private String idUser;
+    private String idCar;
+    private String dateStart;
+    private String dateFinish;
     private String status;
     private String description;
 }

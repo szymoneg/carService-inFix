@@ -22,10 +22,11 @@ public class EditUserDao{
     JdbcTemplate jdbc;
     @Autowired
     private HashPassword hashPassword;
-    SpringJdbcConfig conn = new SpringJdbcConfig();
+    @Autowired
+    SpringJdbcConfig conn;
 
     @CrossOrigin
-    @RequestMapping(value = "/edit-send",method = RequestMethod.POST)
+    @RequestMapping(value = "/edit-send",method = RequestMethod.PUT)
     public ResponseEntity<String> sendEditData(@RequestBody UserDto edit) throws SQLException {
         try {
             PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");

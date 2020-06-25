@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class CarDto {
+    private String idCar;
     private String marka;
     private String model;
     private String engineCapacity;
