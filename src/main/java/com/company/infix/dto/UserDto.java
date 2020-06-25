@@ -3,7 +3,7 @@ package com.company.infix.dto;
 import lombok.Data;
 
 @Data
-public class UserRegisterDto {
+public class UserDto {
     private String permision;
     private String name;
     private String surname;

@@ -8,7 +8,6 @@ public class ReservationDto {
     private int idCar;
     private String dataStart;
     private String dataFinish;
-    private int idService;
     private String status;
     private String description;
 }

@@ -1,9 +1,7 @@
 package com.company.infix.controler;
 
-import com.company.infix.dto.CarDto;
-import com.company.infix.dto.UserRegisterDto;
+import com.company.infix.dto.UserDto;
 import com.google.gson.Gson;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,19 +14,18 @@ import java.util.ArrayList;
 
 @RestController
 public class EditAPIController {
-    public String logintest;
     @Autowired
     JdbcTemplate jdbc;
 
     @CrossOrigin
     @RequestMapping(value = "/edit/{login}", method = RequestMethod.GET)
     public String getDataUser(@PathVariable("login") String login){
-        ArrayList<UserRegisterDto> newList = jdbc.query("SELECT name,surname FROM user WHERE login=?",new Object[]{login}, new ResultSetExtractor<ArrayList<UserRegisterDto>>() {
+        ArrayList<UserDto> newList = jdbc.query("SELECT name,surname FROM user WHERE login=?",new Object[]{login}, new ResultSetExtractor<ArrayList<UserDto>>() {
             @Override
-            public ArrayList<UserRegisterDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                ArrayList<UserRegisterDto> newList = new ArrayList<UserRegisterDto>();
+            public ArrayList<UserDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                ArrayList<UserDto> newList = new ArrayList<UserDto>();
                 while(rs.next()){
-                    UserRegisterDto userEdit = new UserRegisterDto();
+                    UserDto userEdit = new UserDto();
                     userEdit.setName(rs.getString("name"));
                     userEdit.setSurname(rs.getString("surname"));
 
@@ -37,7 +34,6 @@ public class EditAPIController {
                 return newList;
             }
         });
-        logintest = login;
         String json = new Gson().toJson(newList);
         return json;
     }

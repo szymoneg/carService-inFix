@@ -19,7 +19,7 @@ public class ReservationAPIController {
     public ResponseEntity<Void>testReservation(@RequestBody ReservationDto resDb){
 
         jdbc.update("INSERT INTO reservation(iduser,idcar,data_start,data_finish,status,description) VALUES (?,?,?,?,?,?)",
-                resDb.getIdUser(),resDb.getIdCar(),resDb.getDataStart(),null,resDb.getIdService(),null,resDb.getDescription());
+                resDb.getIdUser(),resDb.getIdCar(),resDb.getDataStart(),null,null,resDb.getDescription());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

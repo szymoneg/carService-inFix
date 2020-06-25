@@ -1,8 +1,7 @@
 package com.company.infix.dao;
 
 
-import com.company.infix.controler.EditAPIController;
-import com.company.infix.dto.UserEditDto;
+import com.company.infix.dto.UserDto;
 import com.company.infix.service.HashPassword;
 import com.company.infix.service.impl.HashPasswordImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +14,19 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-//do
 
 @RestController
 public class EditUserDao{
-    private HashPassword hashPassword = new HashPasswordImpl();
 
     @Autowired
     JdbcTemplate jdbc;
+    @Autowired
+    private HashPassword hashPassword;
     SpringJdbcConfig conn = new SpringJdbcConfig();
 
     @CrossOrigin
     @RequestMapping(value = "/edit-send",method = RequestMethod.POST)
-    public ResponseEntity<String> sendEditData(@RequestBody UserEditDto edit) throws SQLException {
+    public ResponseEntity<String> sendEditData(@RequestBody UserDto edit) throws SQLException {
         try {
             PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
             st.setString(1, hashPassword.HashMethod(edit.getPassword()));
