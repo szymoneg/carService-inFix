@@ -1,15 +1,16 @@
 package com.company.infix.controler;
 
 import com.company.infix.dto.UserDto;
-import com.company.infix.service.CheckValue;
 import com.company.infix.service.HashPassword;
 import com.company.infix.service.SendMails;
+import com.company.infix.service.CheckValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.mail.MessagingException;
 import java.security.NoSuchAlgorithmException;
@@ -18,19 +19,22 @@ import java.security.NoSuchAlgorithmException;
 public class RegisterAPIController{
     @Autowired
     JdbcTemplate jdbc;
+
     @Autowired
     private HashPassword hashPassword;
     @Autowired
-    private CheckValue checkValue;
+    private CheckValues checkValues;
     @Autowired
     private SendMails sendMails;
+
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<Void> testRegister(@RequestBody UserDto db) throws NoSuchAlgorithmException, MessagingException {
         //Walidacja znaków specjalnych
         String name = db.getName();
-        if(!checkValue.check(name)) {
+        String surname = db.getSurname();
+        if(!checkValues.checkNameAndSurname(name, surname)) {
             try {
                 jdbc.queryForObject("SELECT login FROM user WHERE login=?", new Object[]{db.getLogin()}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
