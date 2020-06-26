@@ -9,18 +9,16 @@ import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.mail.MessagingException;
 import java.security.NoSuchAlgorithmException;
 
+@Component
 public class RegisterDao {
     @Autowired
     JdbcTemplate jdbc;
-
     @Autowired
     private HashPassword hashPassword;
     @Autowired
@@ -29,10 +27,9 @@ public class RegisterDao {
     private SendMails sendMails;
 
     public ResponseEntity<Void> testRegister(UserDto db) throws NoSuchAlgorithmException, MessagingException {
-        //Walidacja znaków specjalnych
         String name = db.getName();
         String surname = db.getSurname();
-        if (!checkValues.checkNameAndSurname(name, surname)) {
+        if (checkValues.checkNameAndSurname(name, surname)) {
             try {
                 jdbc.queryForObject("SELECT login FROM user WHERE login=?", new Object[]{db.getLogin()}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);

@@ -1,5 +1,6 @@
 package com.company.infix.service.impl;
 import com.company.infix.service.CheckValues;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

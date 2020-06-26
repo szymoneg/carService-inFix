@@ -1,9 +1,11 @@
 package com.company.infix.controler;
 
+import com.company.infix.dao.EditUserDao;
 import com.company.infix.dto.UserDto;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.web.bind.annotation.*;
@@ -16,25 +18,18 @@ import java.util.ArrayList;
 public class EditAPIController {
     @Autowired
     JdbcTemplate jdbc;
+    @Autowired
+    EditUserDao editUserDao;
 
     @CrossOrigin
     @RequestMapping(value = "/edit/{login}", method = RequestMethod.GET)
     public String getDataUser(@PathVariable("login") String login){
-        ArrayList<UserDto> newList = jdbc.query("SELECT name,surname FROM user WHERE login=?",new Object[]{login}, new ResultSetExtractor<ArrayList<UserDto>>() {
-            @Override
-            public ArrayList<UserDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                ArrayList<UserDto> newList = new ArrayList<UserDto>();
-                while(rs.next()){
-                    UserDto userEdit = new UserDto();
-                    userEdit.setName(rs.getString("name"));
-                    userEdit.setSurname(rs.getString("surname"));
+        return editUserDao.testGetDataUser(login);
+    }
 
-                    newList.add(userEdit);
-                }
-                return newList;
-            }
-        });
-        String json = new Gson().toJson(newList);
-        return json;
+    @CrossOrigin
+    @RequestMapping(value = "/edit-send",method = RequestMethod.PUT)
+    public ResponseEntity<String> sendEditData(@RequestBody UserDto edit) throws SQLException{
+        return editUserDao.sendEditData(edit);
     }
 }

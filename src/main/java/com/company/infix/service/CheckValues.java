@@ -1,5 +1,6 @@
 package com.company.infix.service;
 
+
 public interface CheckValues {
     public boolean checkNameAndSurname(String name, String surname);
     public boolean checkCapacity(String cap);

@@ -1,5 +1,7 @@
 package com.company.infix.controler;
 
+import com.company.infix.dao.CarDao;
+import com.company.infix.dao.ReservationDao;
 import com.company.infix.dto.CarDto;
 import com.company.infix.dto.ReservationDto;
 import com.company.infix.service.CarList;
@@ -16,33 +18,30 @@ public class ReservationAPIController {
     JdbcTemplate jdbc;
     @Autowired
     CarList carList;
+    @Autowired
+    CarDao carDao;
+    @Autowired
+    ReservationDao reservationDao;
 
+    //Pierwszy krok rezerwacji
     @CrossOrigin
     @RequestMapping(value = "/add-res/{login}",method = RequestMethod.GET)
     public String test(@PathVariable("login") String login){
         return carList.getOwnedCars(login);
     }
 
+    //Drugi krok rezerwacji
     @CrossOrigin
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<Void>testReservation(@RequestBody ReservationDto resDb){
-        jdbc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?)",
-                resDb.getIdUser(),resDb.getIdCar(),null,null,"oczekujący",resDb.getDescription());
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void>reservation(@RequestBody ReservationDto resDb){
+        return reservationDao.testReservation(resDb);
     }
 
+    //Dodanie samochodu
     @CrossOrigin
     @RequestMapping(value = "/add-car", method = RequestMethod.POST)
-    public ResponseEntity<Void>testAddCar(@RequestBody CarDto carDto){
-        try {
-            jdbc.queryForObject("SELECT vin FROM car WHERE vin=?",new Object[]{carDto.getVin()},String.class);
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }catch (IncorrectResultSizeDataAccessException e){
-            System.out.println(carDto.getMarka());
-            jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
-                    carDto.getMarka(), carDto.getModel(), carDto.getEngineCapacity(), carDto.getVin(), carDto.getYearOf(), carDto.getIdUser());
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+    public ResponseEntity<Void>addCar(@RequestBody CarDto carDto){
+        return carDao.testAddCar(carDto);
     }
 
 
