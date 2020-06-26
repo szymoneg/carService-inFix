@@ -2,6 +2,7 @@ package com.company.infix.dao;
 
 
 import com.company.infix.dto.UserDto;
+import com.company.infix.service.CheckValues;
 import com.company.infix.service.HashPassword;
 import com.company.infix.service.impl.HashPasswordImpl;
 import com.google.gson.Gson;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 
 
 @RestController
-public class EditUserDao{
+public class EditUserDao {
 
     @Autowired
     JdbcTemplate jdbc;
@@ -29,31 +30,39 @@ public class EditUserDao{
     private HashPassword hashPassword;
     @Autowired
     SpringJdbcConfig conn;
+    @Autowired
+    CheckValues chkVal;
 
     public ResponseEntity<String> sendEditData(UserDto edit) throws SQLException {
-        try {
-            PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
-            st.setString(1, hashPassword.HashMethod(edit.getPassword()));
-            st.setString(2, edit.getEmail());
-            st.setString(3, edit.getTelephoneNumber());
-            st.setString(4, edit.getLogin());
-            st.executeUpdate();
-            return new ResponseEntity<>(HttpStatus.OK);
-        }catch (SQLException | NoSuchAlgorithmException e) {
-            return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+        String mail = edit.getEmail();
+        String phoneNumber = edit.getTelephoneNumber();
+        String login = edit.getLogin();
+        if (chkVal.checkLogin(login) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkEmail(mail)) {
+            try {
+                PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
+                st.setString(1, hashPassword.HashMethod(edit.getPassword()));
+                st.setString(2, mail);
+                st.setString(3, phoneNumber);
+                st.setString(4, login);
+                st.executeUpdate();
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (SQLException | NoSuchAlgorithmException e) {
+                return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
-    public String testGetDataUser(String login){
-        ArrayList<UserDto> newList = jdbc.query("SELECT name,surname FROM user WHERE login=?",new Object[]{login}, new ResultSetExtractor<ArrayList<UserDto>>() {
+    public String testGetDataUser(String login) {
+        ArrayList<UserDto> newList = jdbc.query("SELECT email, tele_no FROM user WHERE login=?", new Object[]{login}, new ResultSetExtractor<ArrayList<UserDto>>() {
             @Override
             public ArrayList<UserDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
                 ArrayList<UserDto> newList = new ArrayList<UserDto>();
-                while(rs.next()){
+                while (rs.next()) {
                     UserDto userEdit = new UserDto();
-                    userEdit.setName(rs.getString("name"));
-                    userEdit.setSurname(rs.getString("surname"));
-
+                    userEdit.setEmail(rs.getString("email"));
+                    userEdit.setTelephoneNumber(rs.getString("tele_no"));
                     newList.add(userEdit);
                 }
                 return newList;

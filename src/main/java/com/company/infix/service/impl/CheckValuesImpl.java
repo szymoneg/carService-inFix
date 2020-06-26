@@ -1,6 +1,5 @@
 package com.company.infix.service.impl;
 import com.company.infix.service.CheckValues;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,6 +15,12 @@ public class CheckValuesImpl implements CheckValues {
         boolean b1 = m1.find();
         boolean b2 = m2.find();
         return b1 && b2;
+    }
+    @Override
+    public boolean checkLogin(String login) {
+        Pattern p = Pattern.compile("[^a-z0-9_.]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(login);
+        return !m.find();
     }
 
     @Override
@@ -55,7 +60,7 @@ public class CheckValuesImpl implements CheckValues {
 
     @Override
     public boolean checkStatus(String stat) {
-        Pattern p = Pattern.compile("[^a-z0-9]", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("[^a-z0-9\\s]", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(stat);
         return !m.find();
     }

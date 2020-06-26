@@ -22,24 +22,29 @@ public class RegisterDao {
     @Autowired
     private HashPassword hashPassword;
     @Autowired
-    private CheckValues checkValues;
+    private CheckValues chkVal;
     @Autowired
     private SendMails sendMails;
 
     public ResponseEntity<Void> testRegister(UserDto db) throws NoSuchAlgorithmException, MessagingException {
         String name = db.getName();
         String surname = db.getSurname();
-        if (checkValues.checkNameAndSurname(name, surname)) {
+        String psl = db.getPesel();
+        String license = db.getDriversLicense();
+        String mail = db.getEmail();
+        String phoneNumber = db.getTelephoneNumber();
+        String login = db.getLogin();
+        if (chkVal.checkNameAndSurname(name, surname) && chkVal.checkPESEL(psl) && chkVal.checkLicense(license) && chkVal.checkEmail(mail) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkLogin(login)) {
             try {
-                jdbc.queryForObject("SELECT login FROM user WHERE login=?", new Object[]{db.getLogin()}, String.class);
+                jdbc.queryForObject("SELECT login FROM user WHERE login=?", new Object[]{login}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             } catch (IncorrectResultSizeDataAccessException e) {
-                sendMails.sendMail(db.getEmail(),
+                sendMails.sendMail(mail,
                         "witamy na platformie inFix!",
-                        "<b>Witaj, " + db.getLogin() + "!</b><br>", true);
+                        "<b>Witaj, " + login + "!</b><br>", true);
                 jdbc.update("INSERT INTO user(permision,name,surname,pesel,drivers_license,password,login,email,tele_no) values (?,?,?,?,?,?,?,?,?)",
-                        db.getPermision(), db.getName(), db.getSurname(), db.getPesel(), db.getDriversLicense(), hashPassword.HashMethod(db.getPassword()), db.getLogin(),
-                        db.getEmail(), db.getTelephoneNumber());
+                        db.getPermision(), name, surname, psl, license, hashPassword.HashMethod(db.getPassword()), login,
+                        mail, phoneNumber);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         } else {

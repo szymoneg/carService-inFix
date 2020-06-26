@@ -1,6 +1,7 @@
 package com.company.infix.dao;
 
 import com.company.infix.dto.ReservationDto;
+import com.company.infix.service.CheckValues;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 public class ManageDao {
     @Autowired
     JdbcTemplate jdbc;
+    @Autowired
+    CheckValues chkVal;
     @Autowired
     SpringJdbcConfig conn;
 
@@ -47,13 +50,17 @@ public class ManageDao {
             });
             String json = new Gson().toJson(newList);
             return json;
-        }else {
+        } else {
             return "Access denied";
         }
     }
 
-    public ResponseEntity<Void> editReservation(String idres, String status1, String date){
-        jdbc.execute("UPDATE reservation SET status="+status1+",date_start="+date+" WHERE idreservation="+idres);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> editReservation(String idres, String status1, String date) {
+        if (chkVal.checkStatus(status1) && chkVal.checkDate(date)) {
+            jdbc.execute("UPDATE reservation SET status=" + status1 + ",date_start=" + date + " WHERE idreservation=" + idres);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 }

@@ -21,7 +21,7 @@ public class AdministrationAPIController {
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/edit-resevation/{idres}",method = RequestMethod.PUT)
+    @RequestMapping(value = "/edit-reservation/{idres}",method = RequestMethod.PUT)
     public @ResponseBody ResponseEntity<Void> editReservation(@PathVariable("idres") String idres,
                                          @RequestParam String status1,
                                          @RequestParam String date){

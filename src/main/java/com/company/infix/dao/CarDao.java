@@ -2,6 +2,7 @@ package com.company.infix.dao;
 
 import com.company.infix.dto.CarDto;
 import com.company.infix.service.CarList;
+import com.company.infix.service.CheckValues;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -23,15 +24,26 @@ public class CarDao {
     JdbcTemplate jdbc;
     @Autowired
     CarList carList;
+    @Autowired
+    CheckValues chkVal;
 
-    public ResponseEntity<Void> testAddCar(CarDto carDto){
-        try {
-            jdbc.queryForObject("SELECT vin FROM car WHERE vin=?",new Object[]{carDto.getVin()},String.class);
+    public ResponseEntity<Void> testAddCar(CarDto carDto) {
+        String mark = carDto.getMarka();
+        String model = carDto.getModel();
+        String cap = carDto.getEngineCapacity();
+        String vin = carDto.getVin();
+        String yr = carDto.getYearOf(); //yearofcar
+        if (chkVal.checkCar(mark) && chkVal.checkCar(model) && chkVal.checkCapacity(cap) && chkVal.checkVIN(vin) && chkVal.checkYear(yr)) {
+            try {
+                jdbc.queryForObject("SELECT vin FROM car WHERE vin=?", new Object[]{vin}, String.class);
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            } catch (IncorrectResultSizeDataAccessException e) {
+                jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
+                        mark, model, cap, vin, yr, carDto.getIdUser());
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }catch (IncorrectResultSizeDataAccessException e){
-            jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
-                    carDto.getMarka(), carDto.getModel(), carDto.getEngineCapacity(), carDto.getVin(), carDto.getYearOf(), carDto.getIdUser());
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
@@ -42,7 +54,7 @@ public class CarDao {
                     @Override
                     public ArrayList<CarDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
                         ArrayList<CarDto> newList = new ArrayList<CarDto>();
-                        while(rs.next()){
+                        while (rs.next()) {
                             CarDto newCar = new CarDto();
                             newCar.setEngineCapacity(rs.getString("engine_capacity"));
                             newCar.setVin(rs.getString("vin"));

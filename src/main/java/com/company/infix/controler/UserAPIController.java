@@ -1,10 +1,8 @@
 package com.company.infix.controler;
 
 import com.company.infix.dao.*;
-import com.company.infix.dto.ReservationDto;
 import com.company.infix.dto.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +44,7 @@ public class UserAPIController {
     @CrossOrigin
     @RequestMapping(value = "/search/{vin}",method = RequestMethod.GET)
     public String searchRepair(@PathVariable("vin") String vin){
-        return repairDao.testSearchReapair(vin);
+        return repairDao.testSearchRepair(vin);
     }
 
     @CrossOrigin
