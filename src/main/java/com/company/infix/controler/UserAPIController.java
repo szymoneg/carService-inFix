@@ -25,7 +25,7 @@ public class UserAPIController {
 
     @CrossOrigin
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity<Void> register(@RequestBody UserDto db) throws MessagingException, NoSuchAlgorithmException {
+    public ResponseEntity<Integer> register(@RequestBody UserDto db) throws MessagingException, NoSuchAlgorithmException {
         return registerDao.testRegister(db);
     }
 

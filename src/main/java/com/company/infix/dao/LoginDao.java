@@ -29,6 +29,7 @@ public class LoginDao {
         if (chkVal.checkLogin(login)) {
             try {
                 String permison = jdbc.queryForObject("select permision from user where login=? and password=?", new Object[]{login, password}, String.class);
+                System.out.println(permison);
                 return new ResponseEntity<>(permison,HttpStatus.OK);
             } catch (IncorrectResultSizeDataAccessException e) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);

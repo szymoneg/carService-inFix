@@ -26,7 +26,7 @@ public class RegisterDao {
     @Autowired
     private SendMails sendMails;
 
-    public ResponseEntity<Void> testRegister(UserDto db) throws NoSuchAlgorithmException, MessagingException {
+    public ResponseEntity<Integer> testRegister(UserDto db) throws NoSuchAlgorithmException, MessagingException {
         String name = db.getName();
         String surname = db.getSurname();
         String psl = db.getPesel();
@@ -45,7 +45,7 @@ public class RegisterDao {
                 jdbc.update("INSERT INTO user(permision,name,surname,pesel,drivers_license,password,login,email,tele_no) values ('0',?,?,?,?,?,?,?,?)",
                          name, surname, psl, license, hashPassword.HashMethod(db.getPassword()), login,
                         mail, phoneNumber);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(1,HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
