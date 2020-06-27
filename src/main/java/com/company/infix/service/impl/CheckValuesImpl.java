@@ -9,7 +9,7 @@ public class CheckValuesImpl implements CheckValues {
 
     @Override
     public boolean checkNameAndSurname(String name, String surname) {
-        Pattern p = Pattern.compile("^([A-Z][a-z]{1,40})$");
+        Pattern p = Pattern.compile("^([A-ZŻŹĆĄŚĘŁÓŃ][a-zżźćńółęąś]{1,40})$");
         Matcher m1 = p.matcher(name);
         Matcher m2 = p.matcher(surname);
         boolean b1 = m1.find();

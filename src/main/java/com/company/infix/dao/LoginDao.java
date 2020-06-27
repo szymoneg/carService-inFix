@@ -28,8 +28,8 @@ public class LoginDao {
         String login = db.getLogin();
         if (chkVal.checkLogin(login)) {
             try {
-                String test = jdbc.queryForObject("select permision from user where login=? and password=?", new Object[]{login, password}, String.class);
-                return new ResponseEntity<>(test,HttpStatus.OK);
+                String permison = jdbc.queryForObject("select permision from user where login=? and password=?", new Object[]{login, password}, String.class);
+                return new ResponseEntity<>(permison,HttpStatus.OK);
             } catch (IncorrectResultSizeDataAccessException e) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
