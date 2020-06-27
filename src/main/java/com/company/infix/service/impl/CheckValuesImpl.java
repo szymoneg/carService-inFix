@@ -53,14 +53,14 @@ public class CheckValuesImpl implements CheckValues {
 
     @Override
     public boolean checkDesc(String desc) {
-        Pattern p = Pattern.compile("[^a-z0-9.,()!?\\sżźćńółęąśŻŹĆĄŚĘŁÓŃ]", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("[^a-z0-9.,()!/?\\sżźćńółęąśŻŹĆĄŚĘŁÓŃ]", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(desc);
         return !m.find();
     }
 
     @Override
     public boolean checkStatus(String stat) {
-        Pattern p = Pattern.compile("[^a-z0-9\\s]", Pattern.CASE_INSENSITIVE);
+        Pattern p = Pattern.compile("[^a-z0-9.,()!/?\\sżźćńółęąśŻŹĆĄŚĘŁÓŃ]", Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(stat);
         return !m.find();
     }
