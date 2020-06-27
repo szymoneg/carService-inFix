@@ -56,11 +56,11 @@ public class ManageDao {
     }
 
     public ResponseEntity<Void> editReservation(String idres, String status1, String date) {
-        if (chkVal.checkStatus(status1) && chkVal.checkDate(date)) {
+        //if (chkVal.checkStatus(status1)) {
             jdbc.execute("UPDATE reservation SET status=" + status1 + ",date_start=" + date + " WHERE idreservation=" + idres);
             return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+        //} else {
+            //return new ResponseEntity<>(HttpStatus.CONFLICT);
+        //}
     }
 }

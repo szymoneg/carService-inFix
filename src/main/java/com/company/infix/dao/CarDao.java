@@ -33,7 +33,7 @@ public class CarDao {
         String cap = carDto.getEngineCapacity();
         String vin = carDto.getVin();
         String yr = carDto.getYearOf(); //yearofcar
-        if (chkVal.checkCar(mark) && chkVal.checkCar(model) && chkVal.checkCapacity(cap) && chkVal.checkVIN(vin) && chkVal.checkYear(yr)) {
+        if (chkVal.checkCar(mark) && chkVal.checkCar(model) && chkVal.checkCapacity(cap) && chkVal.checkVIN(vin)) {
             try {
                 jdbc.queryForObject("SELECT vin FROM car WHERE vin=?", new Object[]{vin}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);

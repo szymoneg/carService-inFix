@@ -31,7 +31,7 @@ public class UserAPIController {
 
     @CrossOrigin
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<Void> login(@RequestBody UserDto db) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> login(@RequestBody UserDto db) throws NoSuchAlgorithmException {
         return loginDao.testLogin(db);
     }
 

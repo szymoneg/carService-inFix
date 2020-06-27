@@ -23,13 +23,13 @@ public class LoginDao {
     CheckValues chkVal;
 
 
-    public ResponseEntity<Void> testLogin(UserDto db) throws NoSuchAlgorithmException {
+    public ResponseEntity<String> testLogin(UserDto db) throws NoSuchAlgorithmException {
         String password = hashPassword.HashMethod(db.getPassword());
         String login = db.getLogin();
         if (chkVal.checkLogin(login)) {
             try {
-                String test = jdbc.queryForObject("select name from user where login=? and password=?", new Object[]{login, password}, String.class);
-                return new ResponseEntity<>(HttpStatus.OK);
+                String test = jdbc.queryForObject("select permision from user where login=? and password=?", new Object[]{login, password}, String.class);
+                return new ResponseEntity<>(test,HttpStatus.OK);
             } catch (IncorrectResultSizeDataAccessException e) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
