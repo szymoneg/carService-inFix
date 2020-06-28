@@ -7,4 +7,5 @@ public class RepairDto {
     private String idUser;
     private String status;
     private String vin;
+    private String idRepair;
 }

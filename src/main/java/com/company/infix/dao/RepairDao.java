@@ -44,7 +44,6 @@ public class RepairDao {
         return json;
     }
 
-    //TODO dodawanie po logine
     public ResponseEntity<Void> testAddRepair(RepairDto repairDto,String login) {
         String vin = repairDto.getVin();
         String status = repairDto.getStatus();
@@ -85,7 +84,7 @@ public class RepairDao {
 
     public String testShowAllRepair(){
         ArrayList<Pair<UserDto, RepairDto>> reservList = jbdc.query(
-                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status FROM user u inner join repair r using(iduser)", rs -> {
+                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status,r.idrepair FROM user u inner join repair r using(iduser)", rs -> {
                     ArrayList<Pair<UserDto, RepairDto>> reservListTemp = new ArrayList<>();
                     while (rs.next()) {
                         UserDto userDto = new UserDto();
@@ -96,6 +95,7 @@ public class RepairDao {
                         userDto.setEmail(rs.getString("email"));
                         repairDto.setVin(rs.getString("vin"));
                         repairDto.setStatus(rs.getString("status"));
+                        repairDto.setIdRepair(rs.getString("idrepair"));
                         reservListTemp.add(Pair.of(userDto, repairDto));
                     }
                     return reservListTemp;
@@ -107,7 +107,8 @@ public class RepairDao {
                     new AbstractMap.SimpleEntry<>("tele_no", e.getFirst().getTelephoneNumber()),
                     new AbstractMap.SimpleEntry<>("email", e.getFirst().getEmail()),
                     new AbstractMap.SimpleEntry<>("vin", e.getSecond().getVin()),
-                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus())
+                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus()),
+                    new AbstractMap.SimpleEntry<>("idrepair",e.getSecond().getIdRepair())
             ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }).collect(Collectors.toList()));
         return json;
@@ -144,15 +145,19 @@ public class RepairDao {
     }
 
     //TODO wycena usługi
+
+
     public ResponseEntity<Void> testChangeStatus(RepairDto repairDto, String flag) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String vin = repairDto.getVin();
         String status = repairDto.getStatus();
+        String id_car = jbdc.queryForObject("SELECT c.idcar from car c inner join reservation using(idcar) where c.vin=? ",new Object[]{vin},String.class);
         if (chkVal.checkVIN(vin) && chkVal.checkStatus(status)) {
             jbdc.execute("UPDATE repair SET status='" + status + "' WHERE vin=" + vin);
             if (flag.equals("1")) {
-                jbdc.execute("UPDATE reservation SET date_finish='" + formatter.format(date) + "', status='ukonczono' WHERE vin=" + repairDto.getVin());
+                jbdc.execute("UPDATE reservation SET date_finish='" + formatter.format(date) + "' WHERE idcar=" + id_car);
+                jbdc.execute("UPDATE repair SET date_finish='" + formatter.format(date) + "', status='ukonczono' WHERE vin=" + vin);
             }
             return new ResponseEntity<>(HttpStatus.OK);
         } else {

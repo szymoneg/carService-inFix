@@ -39,12 +39,20 @@ public class EditUserDao {
         String login = edit.getLogin();
         if (chkVal.checkLogin(login) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkEmail(mail)) {
             try {
-                PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
-                st.setString(1, hashPassword.HashMethod(edit.getPassword()));
-                st.setString(2, mail);
-                st.setString(3, phoneNumber);
-                st.setString(4, login);
-                st.executeUpdate();
+                if(!(edit.getPassword().isEmpty())) {
+                    PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
+                    st.setString(1, hashPassword.HashMethod(edit.getPassword()));
+                    st.setString(2, mail);
+                    st.setString(3, phoneNumber);
+                    st.setString(4, login);
+                    st.executeUpdate();
+                }else {
+                    PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET email=?,tele_no=? WHERE login=?");
+                    st.setString(1, mail);
+                    st.setString(2, phoneNumber);
+                    st.setString(3, login);
+                    st.executeUpdate();
+                }
                 return new ResponseEntity<>(HttpStatus.OK);
             } catch (SQLException | NoSuchAlgorithmException e) {
                 return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
