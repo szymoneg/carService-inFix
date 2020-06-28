@@ -55,6 +55,7 @@ public class ManageDao {
         }
     }
 
+    //TODO wywalic date
     public ResponseEntity<Void> editReservation(String idres, String status1, String date) {
         if (chkVal.checkStatus(status1)) {
             jdbc.execute("UPDATE reservation SET status=" + status1 + ",date_start=" + date + " WHERE idreservation=" + idres);
@@ -63,4 +64,7 @@ public class ManageDao {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
+
+
+    //TODO LISTA wszystkich uuserów
 }

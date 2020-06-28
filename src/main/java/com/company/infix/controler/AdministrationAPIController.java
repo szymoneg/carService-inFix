@@ -44,9 +44,9 @@ public class AdministrationAPIController {
     }
 
     @CrossOrigin
-    @RequestMapping(value = "/add-repair",method = RequestMethod.POST)
-    public ResponseEntity<Void> addReapir(@RequestBody RepairDto repairDto){
-        return repairDao.testAddRepair(repairDto);
+    @RequestMapping(value = "/add-repair/{login}",method = RequestMethod.POST)
+    public ResponseEntity<Void> addReapir(@RequestBody RepairDto repairDto,@PathVariable("login") String login){
+        return repairDao.testAddRepair(repairDto,login);
     }
 
     @CrossOrigin

@@ -31,11 +31,8 @@ public class LoginDao {
         ArrayList loginArr = new ArrayList<>();
         if (chkVal.checkLogin(login)) {
             try {
-                String permison = jdbc.queryForObject("select permision from user where login=? and password=?", new Object[]{login, password}, String.class);
-                String login1 = jdbc.queryForObject("select login from user where login=? and password=?", new Object[]{login, password}, String.class);
-                System.out.println(permison);
-                loginArr.add(permison);
-                loginArr.add(login1);
+                loginArr = (ArrayList) jdbc.queryForList("select iduser,login,permision from user where login=? and password=?", new Object[]{login, password});
+
                 String json = new Gson().toJson(loginArr);
                 return new ResponseEntity<String>(json,HttpStatus.OK);
             } catch (IncorrectResultSizeDataAccessException e) {

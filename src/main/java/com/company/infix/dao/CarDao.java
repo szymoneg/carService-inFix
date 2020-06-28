@@ -27,6 +27,7 @@ public class CarDao {
     @Autowired
     CheckValues chkVal;
 
+    //TODO login w linku
     public ResponseEntity<String> testAddCar(CarDto carDto,String login) {
         String mark = carDto.getMarka();
         String model = carDto.getModel();
@@ -41,7 +42,8 @@ public class CarDao {
                 String id_user = jdbc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{login}, String.class);
                 jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
                         mark, model, cap, vin, yr, id_user);
-                return new ResponseEntity<String>(id_user,HttpStatus.OK);
+
+                return new ResponseEntity<String>("1",HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

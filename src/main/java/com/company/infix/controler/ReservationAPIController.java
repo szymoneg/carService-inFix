@@ -33,7 +33,7 @@ public class ReservationAPIController {
     //Drugi krok rezerwacji
     @CrossOrigin
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseEntity<Void>reservation(@RequestBody ReservationDto resDb){
+    public ResponseEntity<String>reservation(@RequestBody ReservationDto resDb){
         return reservationDao.testReservation(resDb);
     }
 

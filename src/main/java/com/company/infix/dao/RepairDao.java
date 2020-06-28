@@ -40,18 +40,21 @@ public class RepairDao {
         return json;
     }
 
-    public ResponseEntity<Void> testAddRepair(RepairDto repairDto) {
+    //TODO dodawanie po logine
+    public ResponseEntity<Void> testAddRepair(RepairDto repairDto,String login) {
         String vin = repairDto.getVin();
         String status = repairDto.getStatus();
         if (chkVal.checkVIN(vin) && chkVal.checkStatus(status)) {
+            String id_user = jbdc.queryForObject("SELECT iduser FROM user WHERE login=?",new Object[]{login},String.class);
             jbdc.update("INSERT INTO repair(iduser,status,vin) values (?,?,?)",
-                    repairDto.getIdUser(), status, vin);
+                    id_user, status, vin);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
+    //TODO wyswietlanie kazdej naprawy
     public String testSearchRepair(String vin) {
         ArrayList<Pair<UserDto, RepairDto>> repairList = jbdc.query("select r.status,name,surname FROM user inner join repair r using(iduser) where vin=?", new Object[]{vin}, rs -> {
             ArrayList<Pair<UserDto, RepairDto>> repairListTemp = new ArrayList<>();
@@ -75,6 +78,7 @@ public class RepairDao {
         return json;
     }
 
+    //TODO wycena usługi
     public ResponseEntity<Void> testChangeStatus(RepairDto repairDto, String flag) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
