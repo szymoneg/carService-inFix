@@ -37,28 +37,37 @@ public class EditUserDao {
         String mail = edit.getEmail();
         String phoneNumber = edit.getTelephoneNumber();
         String login = edit.getLogin();
-        if (chkVal.checkLogin(login) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkEmail(mail)) {
-            try {
-                if(!(edit.getPassword() == null)) {
-                    PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
-                    st.setString(1, hashPassword.HashMethod(edit.getPassword()));
-                    st.setString(2, mail);
-                    st.setString(3, phoneNumber);
-                    st.setString(4, login);
+        String permision = edit.getPermision();
+        if(permision!=null){
+            PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET permision=? WHERE login=?");
+            st.setString(1, permision);
+            st.setString(2, login);
+            st.executeUpdate();
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else {
+            if (chkVal.checkLogin(login) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkEmail(mail)) {
+                try {
+                    PreparedStatement st;
+                    if (!(edit.getPassword() == null)) {
+                        st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
+                        st.setString(1, hashPassword.HashMethod(edit.getPassword()));
+                        st.setString(2, mail);
+                        st.setString(3, phoneNumber);
+                        st.setString(4, login);
+                    } else {
+                        st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET email=?,tele_no=? WHERE login=?");
+                        st.setString(1, mail);
+                        st.setString(2, phoneNumber);
+                        st.setString(3, login);
+                    }
                     st.executeUpdate();
-                }else {
-                    PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET email=?,tele_no=? WHERE login=?");
-                    st.setString(1, mail);
-                    st.setString(2, phoneNumber);
-                    st.setString(3, login);
-                    st.executeUpdate();
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } catch (SQLException | NoSuchAlgorithmException e) {
+                    return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
                 }
-                return new ResponseEntity<>(HttpStatus.OK);
-            } catch (SQLException | NoSuchAlgorithmException e) {
-                return new ResponseEntity<>(HttpStatus.FAILED_DEPENDENCY);
+            } else {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
@@ -75,6 +84,28 @@ public class EditUserDao {
                 }
                 return newList;
             }
+        });
+        String json = new Gson().toJson(newList);
+        return json;
+    }
+
+    public String testShowAllUsers(){
+        ArrayList<UserDto> newList = jdbc.query("SELECT * FROM user", rs -> {
+            ArrayList<UserDto> newList1 = new ArrayList<UserDto>();
+            while (rs.next()) {
+                UserDto userEdit = new UserDto();
+                userEdit.setIdUser(rs.getString("iduser"));
+                userEdit.setName(rs.getString("name"));
+                userEdit.setSurname(rs.getString("surname"));
+                userEdit.setEmail(rs.getString("email"));
+                userEdit.setDriversLicense(rs.getString("drivers_license"));
+                userEdit.setLogin(rs.getString("login"));
+                userEdit.setTelephoneNumber(rs.getString("tele_no"));
+                userEdit.setPermision(rs.getString("permision"));
+                userEdit.setPesel(rs.getString("pesel"));
+                newList1.add(userEdit);
+            }
+            return newList1;
         });
         String json = new Gson().toJson(newList);
         return json;

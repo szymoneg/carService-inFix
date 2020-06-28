@@ -1,9 +1,6 @@
 package com.company.infix.controler;
 
-import com.company.infix.dao.CarDao;
-import com.company.infix.dao.ManageDao;
-import com.company.infix.dao.RegisterDao;
-import com.company.infix.dao.RepairDao;
+import com.company.infix.dao.*;
 import com.company.infix.dto.RepairDto;
 import com.company.infix.dto.UserDto;
 import com.company.infix.service.CarList;
@@ -23,6 +20,8 @@ public class AdministrationAPIController {
     RegisterDao registerDao;
     @Autowired
     CarList carList;
+    @Autowired
+    EditUserDao editUserDao;
 
 
     @CrossOrigin
@@ -81,5 +80,9 @@ public class AdministrationAPIController {
     public String showAllCars(){
         return carList.getAllCars();
     }
+
+    @CrossOrigin
+    @RequestMapping(value = "/show-allusers",method = RequestMethod.GET)
+    public String showAllUsers(){ return editUserDao.testShowAllUsers();}
 
 }
