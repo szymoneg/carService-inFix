@@ -1,7 +1,6 @@
 package com.company.infix.dao;
 
 import com.company.infix.dto.PricingDto;
-import com.company.infix.dto.UserDto;
 import com.company.infix.service.CheckValues;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +16,11 @@ public class PricingDao {
     @Autowired
     JdbcTemplate jdbc;
     @Autowired
-    CheckValues checkValues;
+    CheckValues chkVal;
 
     public ResponseEntity<String> testAddPricing(PricingDto pricingDto){
         String description = pricingDto.getDescription();
-        if (checkValues.checkDesc(description)) {
+        if (chkVal.checkDesc(description)) {
             jdbc.update("INSERT INTO pricing(description,price,iduser) values (?,?,?)",
                     description, null,pricingDto.getIdUser());
             return new ResponseEntity<String>("1",HttpStatus.OK);

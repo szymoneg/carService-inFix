@@ -5,13 +5,11 @@ import com.company.infix.dto.ReservationDto;
 import com.company.infix.service.CheckValues;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -22,14 +20,14 @@ import java.util.stream.Stream;
 @Component
 public class ReservationDao {
     @Autowired
-    JdbcTemplate jbdc;
+    JdbcTemplate jdbc;
     @Autowired
     CheckValues chkVal;
 
     public ResponseEntity<String> testReservation(ReservationDto resDb) {
         String desc = resDb.getDescription();
         if (chkVal.checkDesc(desc)) {
-            jbdc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?)",
+            jdbc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?)",
                     resDb.getIdUser(), resDb.getIdCar(), resDb.getDateStart(), null, "1", desc);
             return new ResponseEntity<>("1",HttpStatus.OK);
         } else {
@@ -38,7 +36,7 @@ public class ReservationDao {
     }
 
     public String testShowOldReservation(String login) {
-        ArrayList<Pair<CarDto, ReservationDto>> reservList = jbdc.query(
+        ArrayList<Pair<CarDto, ReservationDto>> reservList = jdbc.query(
                 "select r.date_start,r.date_finish,c.marka,c.model,c.vin FROM reservation r inner join car c using(idcar) inner join user u where u.login=?", new Object[]{login}, rs -> {
                     ArrayList<Pair<CarDto, ReservationDto>> reservListTemp = new ArrayList<>();
                     while (rs.next()) {

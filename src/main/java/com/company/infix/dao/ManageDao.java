@@ -53,7 +53,4 @@ public class ManageDao {
             jdbc.execute("UPDATE reservation SET status=" + status1 +" WHERE idreservation=" + idres);
             return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-    //TODO LISTA wszystkich uuserów
 }

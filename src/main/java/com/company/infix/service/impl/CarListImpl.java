@@ -57,7 +57,6 @@ public class CarListImpl implements CarList {
                             newCar.setModel(rs.getString("model"));
                             newCar.setYearOf(rs.getString("year_of"));
                             newCar.setEngineCapacity(rs.getString("engine_capacity"));
-
                             newList.add(newCar);
                         }
                         return newList;
