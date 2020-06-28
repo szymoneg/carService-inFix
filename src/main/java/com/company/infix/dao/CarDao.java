@@ -27,7 +27,7 @@ public class CarDao {
     @Autowired
     CheckValues chkVal;
 
-    public ResponseEntity<Void> testAddCar(CarDto carDto) {
+    public ResponseEntity<String> testAddCar(CarDto carDto,String login) {
         String mark = carDto.getMarka();
         String model = carDto.getModel();
         String cap = carDto.getEngineCapacity();
@@ -38,10 +38,10 @@ public class CarDao {
                 jdbc.queryForObject("SELECT vin FROM car WHERE vin=?", new Object[]{vin}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             } catch (IncorrectResultSizeDataAccessException e) {
-                String id_user = jdbc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{vin}, String.class);
+                String id_user = jdbc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{login}, String.class);
                 jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
-                        mark, model, cap, vin, yr, carDto.getIdUser());
-                return new ResponseEntity<>(HttpStatus.OK);
+                        mark, model, cap, vin, yr, id_user);
+                return new ResponseEntity<String>(id_user,HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

@@ -39,9 +39,9 @@ public class ReservationAPIController {
 
     //Dodanie samochodu
     @CrossOrigin
-    @RequestMapping(value = "/add-car", method = RequestMethod.POST)
-    public ResponseEntity<Void>addCar(@RequestBody CarDto carDto){
-        return carDao.testAddCar(carDto);
+    @RequestMapping(value = "/add-car/{login}", method = RequestMethod.POST)
+    public ResponseEntity<String>addCar(@RequestBody CarDto carDto,@PathVariable("login") String login){
+        return carDao.testAddCar(carDto,login);
     }
 
 
