@@ -7,12 +7,16 @@ import com.company.infix.dto.UserDto;
 import com.company.infix.service.CheckValues;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,8 +48,9 @@ public class RepairDao {
     public ResponseEntity<Void> testAddRepair(RepairDto repairDto,String login) {
         String vin = repairDto.getVin();
         String status = repairDto.getStatus();
-        if (chkVal.checkVIN(vin) && chkVal.checkStatus(status)) {
-            String id_user = jbdc.queryForObject("SELECT iduser FROM user WHERE login=?",new Object[]{login},String.class);
+        String per = jbdc.queryForObject("SELECT permision FROM user WHERE login=?", new Object[]{login}, String.class);
+        if (chkVal.checkVIN(vin) && chkVal.checkStatus(status) && per.equals("1")) {
+            String id_user = jbdc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{login}, String.class);
             jbdc.update("INSERT INTO repair(iduser,status,vin) values (?,?,?)",
                     id_user, status, vin);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -77,6 +82,29 @@ public class RepairDao {
         }).collect(Collectors.toList()));
         return json;
     }
+
+    public String testShowAllRepair(){
+            ArrayList<ReservationDto> newList = jbdc.query("SELECT * FROM repair", new ResultSetExtractor<ArrayList<ReservationDto>>() {
+                @Override
+                public ArrayList<ReservationDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                    ArrayList<ReservationDto> newList = new ArrayList<ReservationDto>();
+                    while (rs.next()) {
+                        ReservationDto reservationDto = new ReservationDto();
+                        reservationDto.setIdReservation(rs.getString("idreservation"));
+                        reservationDto.setIdCar(rs.getString("idcar"));
+                        reservationDto.setIdUser(rs.getString("iduser"));
+                        reservationDto.setDateFinish(rs.getString("date_start"));
+                        reservationDto.setDateStart(rs.getString("date_finish"));
+                        reservationDto.setStatus(rs.getString("status"));
+                        reservationDto.setDescription(rs.getString("description"));
+                        newList.add(reservationDto);
+                    }
+                    return newList;
+                }
+            });
+            String json = new Gson().toJson(newList);
+            return json;
+        }
 
     //TODO wycena usługi
     public ResponseEntity<Void> testChangeStatus(RepairDto repairDto, String flag) {
