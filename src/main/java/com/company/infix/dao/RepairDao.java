@@ -76,66 +76,41 @@ public class RepairDao {
     }
 
     public String testShowAllRepair(){
-        ArrayList<Pair<UserDto, RepairDto>> reservList = jdbc.query(
-                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status,r.idrepair FROM user u inner join repair r using(iduser)", rs -> {
-                    ArrayList<Pair<UserDto, RepairDto>> reservListTemp = new ArrayList<>();
-                    while (rs.next()) {
-                        UserDto userDto = new UserDto();
-                        RepairDto repairDto = new RepairDto();
-                        userDto.setName(rs.getString("name"));
-                        userDto.setSurname(rs.getString("surname"));
-                        userDto.setTelephoneNumber(rs.getString("tele_no"));
-                        userDto.setEmail(rs.getString("email"));
-                        repairDto.setVin(rs.getString("vin"));
-                        repairDto.setStatus(rs.getString("status"));
-                        repairDto.setIdRepair(rs.getString("idrepair"));
-                        reservListTemp.add(Pair.of(userDto, repairDto));
+        ArrayList arr;
+
+        arr = jdbc.query("select u.name,u.surname,u.tele_no,u.email,r.vin,r.status,r.date_finish,c.model,c.marka FROM user u inner join repair r using(iduser) inner join car c using(iduser)",
+                rs->{
+                    ArrayList<HashMap<String,Object>> lis = new ArrayList<>();
+                    while(rs.next()){
+                        HashMap<String,Object> entry = new HashMap<>();
+                        for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+                            entry.put(rs.getMetaData().getColumnName(i), rs.getObject(i));
+                        }
+                        lis.add(entry);
                     }
-                    return reservListTemp;
+                    return lis;
                 });
-        String json = new Gson().toJson(reservList.stream().map(e -> {
-            return Stream.of(
-                    new AbstractMap.SimpleEntry<>("name", e.getFirst().getName()),
-                    new AbstractMap.SimpleEntry<>("surname", e.getFirst().getSurname()),
-                    new AbstractMap.SimpleEntry<>("tele_no", e.getFirst().getTelephoneNumber()),
-                    new AbstractMap.SimpleEntry<>("email", e.getFirst().getEmail()),
-                    new AbstractMap.SimpleEntry<>("vin", e.getSecond().getVin()),
-                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus()),
-                    new AbstractMap.SimpleEntry<>("idrepair",e.getSecond().getIdRepair())
-            ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        }).collect(Collectors.toList()));
-        return json;
+        return new Gson().toJson(arr);
     }
 
     public String testShowUserRepair(String login){
-        ArrayList<Pair<UserDto, RepairDto>> reservList = jdbc.query(
-                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status FROM user u inner join repair r using(iduser) WHERE u.login=?",new Object[]{login}, rs -> {
-                    ArrayList<Pair<UserDto, RepairDto>> reservListTemp = new ArrayList<>();
-                    while (rs.next()) {
-                        UserDto userDto = new UserDto();
-                        RepairDto repairDto = new RepairDto();
-                        userDto.setName(rs.getString("name"));
-                        userDto.setSurname(rs.getString("surname"));
-                        userDto.setTelephoneNumber(rs.getString("tele_no"));
-                        userDto.setEmail(rs.getString("email"));
-                        repairDto.setVin(rs.getString("vin"));
-                        repairDto.setStatus(rs.getString("status"));
-                        reservListTemp.add(Pair.of(userDto, repairDto));
-                    }
-                    return reservListTemp;
-                });
-        String json = new Gson().toJson(reservList.stream().map(e -> {
-            return Stream.of(
-                    new AbstractMap.SimpleEntry<>("name", e.getFirst().getName()),
-                    new AbstractMap.SimpleEntry<>("surname", e.getFirst().getSurname()),
-                    new AbstractMap.SimpleEntry<>("tele_no", e.getFirst().getTelephoneNumber()),
-                    new AbstractMap.SimpleEntry<>("email", e.getFirst().getEmail()),
-                    new AbstractMap.SimpleEntry<>("vin", e.getSecond().getVin()),
-                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus())
-            ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        }).collect(Collectors.toList()));
-        return json;
+        ArrayList arr;
+
+        arr = jdbc.query("select u.name,u.surname,u.tele_no,u.email,r.vin,r.status,r.date_finish,c.model,c.marka FROM user u inner join repair r using(iduser) inner join car c using(iduser) WHERE u.login=?",new Object[]{login},
+        rs->{
+            ArrayList<HashMap<String,Object>> lis = new ArrayList<>();
+            while(rs.next()){
+                HashMap<String,Object> entry = new HashMap<>();
+                for(int i=1;i<=rs.getMetaData().getColumnCount();i++){
+                    entry.put(rs.getMetaData().getColumnName(i), rs.getObject(i));
+                }
+                lis.add(entry);
+            }
+            return lis;
+        });
+        return new Gson().toJson(arr);
     }
+
 
     public ResponseEntity<Void> testChangeStatus(RepairDto repairDto, String flag) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

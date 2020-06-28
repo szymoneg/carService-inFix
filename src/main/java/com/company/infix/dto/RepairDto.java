@@ -9,4 +9,5 @@ public class RepairDto {
     private String vin;
     private String idRepair;
     private String idCar;
+    private String dateFinish;
 }

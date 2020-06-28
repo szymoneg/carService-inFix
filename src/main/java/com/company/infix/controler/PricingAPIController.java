@@ -28,4 +28,10 @@ public class PricingAPIController {
     public String showPricing(){
         return pricingDao.testShowPricing();
     }
+
+    @CrossOrigin
+    @RequestMapping(value = "/show-pricing/{login}",method = RequestMethod.GET)
+    public String showUserPricing(@PathVariable("login") String login){
+        return pricingDao.testShowUserPricing(login);
+    }
 }
