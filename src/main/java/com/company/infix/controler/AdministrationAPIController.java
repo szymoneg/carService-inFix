@@ -1,10 +1,12 @@
 package com.company.infix.controler;
 
+import com.company.infix.dao.CarDao;
 import com.company.infix.dao.ManageDao;
 import com.company.infix.dao.RegisterDao;
 import com.company.infix.dao.RepairDao;
 import com.company.infix.dto.RepairDto;
 import com.company.infix.dto.UserDto;
+import com.company.infix.service.CarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ public class AdministrationAPIController {
     RepairDao repairDao;
     @Autowired
     RegisterDao registerDao;
+    @Autowired
+    CarList carList;
 
 
     @CrossOrigin
@@ -71,6 +75,12 @@ public class AdministrationAPIController {
     @RequestMapping(value = "/show-allrepair/{login}",method = RequestMethod.GET)
     public String showAllRepair(@PathVariable("login") String login){
         return repairDao.testShowUserRepair(login);
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/show-allcars",method = RequestMethod.GET)
+    public String showAllCars(){
+        return carList.getAllCars();
     }
 
 }

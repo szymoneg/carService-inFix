@@ -24,6 +24,7 @@ public class ReservationAPIController {
     ReservationDao reservationDao;
 
     //Pierwszy krok rezerwacji
+    //Metoda zwraca liste samochodów usera
     @CrossOrigin
     @RequestMapping(value = "/add-res/{login}",method = RequestMethod.GET)
     public String test(@PathVariable("login") String login){

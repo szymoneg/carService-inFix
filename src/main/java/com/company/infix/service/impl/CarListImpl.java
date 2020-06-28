@@ -42,4 +42,28 @@ public class CarListImpl implements CarList {
         String json = new Gson().toJson(newList);
         return json;
     }
+
+    public String getAllCars(){
+        ArrayList<CarDto> newList = jdbc.query("SELECT * FROM car ", new ResultSetExtractor<ArrayList<CarDto>>() {
+                    @Override
+                    public ArrayList<CarDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                        ArrayList<CarDto> newList = new ArrayList<CarDto>();
+                        while(rs.next()){
+                            CarDto newCar = new CarDto();
+                            newCar.setIdCar(rs.getString("idcar"));
+                            newCar.setIdUser(rs.getString("iduser"));
+                            newCar.setVin(rs.getString("vin"));
+                            newCar.setMarka(rs.getString("marka"));
+                            newCar.setModel(rs.getString("model"));
+                            newCar.setYearOf(rs.getString("year_of"));
+                            newCar.setEngineCapacity(rs.getString("engine_capacity"));
+
+                            newList.add(newCar);
+                        }
+                        return newList;
+                    }
+                });
+        String json = new Gson().toJson(newList);
+        return json;
+    }
 }
