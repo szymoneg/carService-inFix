@@ -20,6 +20,7 @@ public class AdministrationAPIController {
     @Autowired
     RegisterDao registerDao;
 
+
     @CrossOrigin
     @RequestMapping(value = "/show-pending/{login}",method = RequestMethod.GET)
     public String testShowPendingRes(@PathVariable("login") String login){
@@ -59,4 +60,6 @@ public class AdministrationAPIController {
     public ResponseEntity<Void> addWorker(@RequestBody UserDto userDto) throws NoSuchAlgorithmException {
         return registerDao.testAddWorker(userDto);
     }
+
+
 }

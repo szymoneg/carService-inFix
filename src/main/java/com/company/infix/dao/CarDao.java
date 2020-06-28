@@ -38,6 +38,7 @@ public class CarDao {
                 jdbc.queryForObject("SELECT vin FROM car WHERE vin=?", new Object[]{vin}, String.class);
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             } catch (IncorrectResultSizeDataAccessException e) {
+                String id_user = jdbc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{vin}, String.class);
                 jdbc.update("INSERT INTO car(marka,model,engine_capacity,vin,year_of,iduser) VALUES (?,?,?,?,?,?)",
                         mark, model, cap, vin, yr, carDto.getIdUser());
                 return new ResponseEntity<>(HttpStatus.OK);
