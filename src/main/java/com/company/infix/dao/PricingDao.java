@@ -42,7 +42,7 @@ public class PricingDao {
 
     public String testShowUserPricing(String login){
         ArrayList pricingList = new ArrayList();
-        pricingList = (ArrayList) jdbc.queryForList("SELECT * from pricing WHERE login=?",new Object[]{login});
+        pricingList = (ArrayList) jdbc.queryForList("SELECT p.* from pricing p inner join user u using(iduser) WHERE u.login=?",new Object[]{login});
         String json = new Gson().toJson(pricingList);
         return json;
     }
