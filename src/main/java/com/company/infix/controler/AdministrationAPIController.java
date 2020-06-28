@@ -61,5 +61,16 @@ public class AdministrationAPIController {
         return registerDao.testAddWorker(userDto);
     }
 
+    @CrossOrigin
+    @RequestMapping(value = "/show-allrepair",method = RequestMethod.GET)
+    public String showAllRepair(){
+        return repairDao.testShowAllRepair();
+    }
+
+    @CrossOrigin
+    @RequestMapping(value = "/show-allrepair/{login}",method = RequestMethod.GET)
+    public String showAllRepair(@PathVariable("login") String login){
+        return repairDao.testShowUserRepair(login);
+    }
 
 }

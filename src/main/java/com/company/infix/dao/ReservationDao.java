@@ -29,8 +29,8 @@ public class ReservationDao {
     public ResponseEntity<String> testReservation(ReservationDto resDb) {
         String desc = resDb.getDescription();
         if (chkVal.checkDesc(desc)) {
-            jbdc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?) OUTPUT Inserted.idreservation",
-                    resDb.getIdUser(), resDb.getIdCar(), null, null, "oczekujący", desc);
+            jbdc.update("INSERT INTO reservation(iduser,idcar,date_start,date_finish,status,description) VALUES (?,?,?,?,?,?)",
+                    resDb.getIdUser(), resDb.getIdCar(), resDb.getDateStart(), null, "1", desc);
             return new ResponseEntity<>("1",HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

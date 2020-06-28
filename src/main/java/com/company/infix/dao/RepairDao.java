@@ -84,27 +84,64 @@ public class RepairDao {
     }
 
     public String testShowAllRepair(){
-            ArrayList<ReservationDto> newList = jbdc.query("SELECT * FROM repair", new ResultSetExtractor<ArrayList<ReservationDto>>() {
-                @Override
-                public ArrayList<ReservationDto> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                    ArrayList<ReservationDto> newList = new ArrayList<ReservationDto>();
+        ArrayList<Pair<UserDto, RepairDto>> reservList = jbdc.query(
+                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status FROM user u inner join repair r using(iduser)", rs -> {
+                    ArrayList<Pair<UserDto, RepairDto>> reservListTemp = new ArrayList<>();
                     while (rs.next()) {
-                        ReservationDto reservationDto = new ReservationDto();
-                        reservationDto.setIdReservation(rs.getString("idreservation"));
-                        reservationDto.setIdCar(rs.getString("idcar"));
-                        reservationDto.setIdUser(rs.getString("iduser"));
-                        reservationDto.setDateFinish(rs.getString("date_start"));
-                        reservationDto.setDateStart(rs.getString("date_finish"));
-                        reservationDto.setStatus(rs.getString("status"));
-                        reservationDto.setDescription(rs.getString("description"));
-                        newList.add(reservationDto);
+                        UserDto userDto = new UserDto();
+                        RepairDto repairDto = new RepairDto();
+                        userDto.setName(rs.getString("name"));
+                        userDto.setSurname(rs.getString("surname"));
+                        userDto.setTelephoneNumber(rs.getString("tele_no"));
+                        userDto.setEmail(rs.getString("email"));
+                        repairDto.setVin(rs.getString("vin"));
+                        repairDto.setStatus(rs.getString("status"));
+                        reservListTemp.add(Pair.of(userDto, repairDto));
                     }
-                    return newList;
-                }
-            });
-            String json = new Gson().toJson(newList);
-            return json;
-        }
+                    return reservListTemp;
+                });
+        String json = new Gson().toJson(reservList.stream().map(e -> {
+            return Stream.of(
+                    new AbstractMap.SimpleEntry<>("name", e.getFirst().getName()),
+                    new AbstractMap.SimpleEntry<>("surname", e.getFirst().getSurname()),
+                    new AbstractMap.SimpleEntry<>("tele_no", e.getFirst().getTelephoneNumber()),
+                    new AbstractMap.SimpleEntry<>("email", e.getFirst().getEmail()),
+                    new AbstractMap.SimpleEntry<>("vin", e.getSecond().getVin()),
+                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus())
+            ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }).collect(Collectors.toList()));
+        return json;
+    }
+
+    public String testShowUserRepair(String login){
+        ArrayList<Pair<UserDto, RepairDto>> reservList = jbdc.query(
+                "select u.name,u.surname,u.tele_no,u.email,r.vin,r.status FROM user u inner join repair r using(iduser) WHERE u.login=?",new Object[]{login}, rs -> {
+                    ArrayList<Pair<UserDto, RepairDto>> reservListTemp = new ArrayList<>();
+                    while (rs.next()) {
+                        UserDto userDto = new UserDto();
+                        RepairDto repairDto = new RepairDto();
+                        userDto.setName(rs.getString("name"));
+                        userDto.setSurname(rs.getString("surname"));
+                        userDto.setTelephoneNumber(rs.getString("tele_no"));
+                        userDto.setEmail(rs.getString("email"));
+                        repairDto.setVin(rs.getString("vin"));
+                        repairDto.setStatus(rs.getString("status"));
+                        reservListTemp.add(Pair.of(userDto, repairDto));
+                    }
+                    return reservListTemp;
+                });
+        String json = new Gson().toJson(reservList.stream().map(e -> {
+            return Stream.of(
+                    new AbstractMap.SimpleEntry<>("name", e.getFirst().getName()),
+                    new AbstractMap.SimpleEntry<>("surname", e.getFirst().getSurname()),
+                    new AbstractMap.SimpleEntry<>("tele_no", e.getFirst().getTelephoneNumber()),
+                    new AbstractMap.SimpleEntry<>("email", e.getFirst().getEmail()),
+                    new AbstractMap.SimpleEntry<>("vin", e.getSecond().getVin()),
+                    new AbstractMap.SimpleEntry<>("status", e.getSecond().getStatus())
+            ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        }).collect(Collectors.toList()));
+        return json;
+    }
 
     //TODO wycena usługi
     public ResponseEntity<Void> testChangeStatus(RepairDto repairDto, String flag) {
