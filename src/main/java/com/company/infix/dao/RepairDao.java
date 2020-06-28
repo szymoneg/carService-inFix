@@ -46,12 +46,11 @@ public class RepairDao {
 
     public ResponseEntity<Void> testAddRepair(RepairDto repairDto,String login) {
         String vin = repairDto.getVin();
-        String status = repairDto.getStatus();
         String per = jbdc.queryForObject("SELECT permision FROM user WHERE login=?", new Object[]{login}, String.class);
-        if (chkVal.checkVIN(vin) && chkVal.checkStatus(status) && per.equals("1")) {
+        if (chkVal.checkVIN(vin) && per.equals("1")) {
             String id_user = jbdc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{login}, String.class);
             jbdc.update("INSERT INTO repair(iduser,status,vin) values (?,?,?)",
-                    id_user, status, vin);
+                    id_user, "W trakcie diagnozowania usterki", vin);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);

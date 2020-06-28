@@ -26,17 +26,16 @@ public class AdministrationAPIController {
 
 
     @CrossOrigin
-    @RequestMapping(value = "/show-pending/{login}",method = RequestMethod.GET)
-    public String testShowPendingRes(@PathVariable("login") String login){
-        return manageDao.showPendingRes(login);
+    @RequestMapping(value = "/show-pending",method = RequestMethod.GET)
+    public String testShowPendingRes(){
+        return manageDao.showPendingRes();
     }
 
     @CrossOrigin
     @RequestMapping(value = "/edit-reservation/{idres}",method = RequestMethod.PUT)
     public @ResponseBody ResponseEntity<Void> editReservation(@PathVariable("idres") String idres,
-                                         @RequestParam String status1,
-                                         @RequestParam String date){
-        return manageDao.editReservation(idres,status1,date);
+                                         @RequestParam String status1){
+        return manageDao.editReservation(idres,status1);
     }
 
     //--------------------------------------------------------------------

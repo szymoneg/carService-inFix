@@ -39,7 +39,7 @@ public class EditUserDao {
         String login = edit.getLogin();
         if (chkVal.checkLogin(login) && chkVal.checkPhoneNumber(phoneNumber) && chkVal.checkEmail(mail)) {
             try {
-                if(!(edit.getPassword().isEmpty())) {
+                if(!(edit.getPassword() == null)) {
                     PreparedStatement st = conn.mysqlDataSource().getConnection().prepareStatement("UPDATE user SET password=?,email=?,tele_no=? WHERE login=?");
                     st.setString(1, hashPassword.HashMethod(edit.getPassword()));
                     st.setString(2, mail);
