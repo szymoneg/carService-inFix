@@ -3,7 +3,6 @@ package com.company.infix.controler;
 import com.company.infix.dao.*;
 import com.company.infix.dto.RepairDto;
 import com.company.infix.dto.UserDto;
-import com.company.infix.service.CarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,7 @@ public class AdministrationAPIController {
     @Autowired
     RegisterDao registerDao;
     @Autowired
-    CarList carList;
+    CarDao carDao;
     @Autowired
     EditUserDao editUserDao;
 
@@ -78,7 +77,7 @@ public class AdministrationAPIController {
     @CrossOrigin
     @RequestMapping(value = "/show-allcars",method = RequestMethod.GET)
     public String showAllCars(){
-        return carList.getAllCars();
+        return carDao.testGetAllCars();
     }
 
     @CrossOrigin

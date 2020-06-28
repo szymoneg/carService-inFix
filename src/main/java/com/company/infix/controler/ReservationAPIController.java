@@ -4,7 +4,6 @@ import com.company.infix.dao.CarDao;
 import com.company.infix.dao.ReservationDao;
 import com.company.infix.dto.CarDto;
 import com.company.infix.dto.ReservationDto;
-import com.company.infix.service.CarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ public class ReservationAPIController {
     @Autowired
     JdbcTemplate jdbc;
     @Autowired
-    CarList carList;
-    @Autowired
     CarDao carDao;
     @Autowired
     ReservationDao reservationDao;
@@ -28,7 +25,7 @@ public class ReservationAPIController {
     @CrossOrigin
     @RequestMapping(value = "/add-res/{login}",method = RequestMethod.GET)
     public String test(@PathVariable("login") String login){
-        return carList.getOwnedCars(login);
+        return carDao.testGetOwnedCars(login);
     }
 
     //Drugi krok rezerwacji

@@ -43,8 +43,8 @@ public class RepairDao {
         String per = jdbc.queryForObject("SELECT permision FROM user WHERE login=?", new Object[]{login}, String.class);
         if (chkVal.checkVIN(vin) && per.equals("1")) {
             String id_user = jdbc.queryForObject("SELECT iduser FROM user WHERE login=?", new Object[]{login}, String.class);
-            jdbc.update("INSERT INTO repair(iduser,status,vin) values (?,?,?)",
-                    id_user, "W trakcie diagnozowania usterki", vin);
+            jdbc.update("INSERT INTO repair(iduser,status,vin,idcar) values (?,?,?,?)",
+                    id_user, "W trakcie diagnozowania usterki", vin, repairDto.getIdCar());
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
